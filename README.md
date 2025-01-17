@@ -49,8 +49,8 @@ export default tseslint.config({
 })
 ```
 
-
-ReactでTypeScriptを使用するサンプルプロジェクト  
+  
+# ReactでTypeScriptを使用するサンプルプロジェクト  
 - プロジェクト作成  
 カレントディレクトリでプロジェクトを展開するには、
 ```
