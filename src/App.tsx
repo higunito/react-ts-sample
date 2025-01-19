@@ -1,26 +1,12 @@
 import { useState } from "react";
-import { Todo } from './types/todo'
 import { nanoid } from 'nanoid';
+import { todoSeed } from './seeds/todoSeed';
 
 function App() {
-  //todoリストの初期化
-  const todoSeeds: Todo[] = [
-    {
-      id: nanoid(),
-      text: 'todo_01',
-      completed: false
-    },
-    {
-      id: nanoid(),
-      text: 'todo_02',
-      completed: false
-    }
-  ];
-
   //formに入力された文字列をstateとして保持
   const [text, setText] = useState('');
-  //todoをStateで管理
-  const [todos, setTodos] = useState(todoSeeds);
+  //todoをStateで管理。seedsで初期化
+  const [todos, setTodos] = useState(todoSeed);
 
 
   const click = (): void => {
@@ -43,7 +29,7 @@ function App() {
   const deleteTodo = (id: string) => {
     // const newTodos = todos.filter((todo) => todo.id !== id);
     // console.log(newTodos);
-    setTodos(todos.filter((todo) => todo.id !== id));
+    setTodos(todos => todos.filter((todo) => todo.id !== id));
     console.log('delete');
   };
 
