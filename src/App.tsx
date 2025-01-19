@@ -8,8 +8,8 @@ function App() {
   //todoをStateで管理。seedsで初期化
   const [todos, setTodos] = useState(todoSeed);
 
-
-  const click = (): void => {
+  //新しいTODOを追加する関数
+  const addTodo = (): void => {
     if (!text) {
       console.log('中身が空です')
     } else {
@@ -23,15 +23,32 @@ function App() {
       setText('');
       console.log('追加しました')
     }
-
   };
 
-  const deleteTodo = (id: string) => {
+  //TODOを削除する関数
+  const deleteTodo = (id: string): void => {
     // const newTodos = todos.filter((todo) => todo.id !== id);
     // console.log(newTodos);
     setTodos(todos => todos.filter((todo) => todo.id !== id));
     console.log('delete');
   };
+
+  //TODOを完了する関数
+  const toggleTodo = (id: string): void => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id ) {
+        todo.completed = !todo.completed;
+        return todo;
+      } else {
+        return todo;
+      }
+
+    });
+    setTodos(newTodos);
+    console.log(`ID: ${id}のTODOを完了しました`);
+  }
+
+
 
   return (
     <>
@@ -45,7 +62,7 @@ function App() {
             onChange={(e) => setText(e.target.value)}
           />
           {/* 関数の実行結果ではなく、関数をオブジェクトとしてそのままonClickに渡す */}
-          <button onClick={click}>
+          <button onClick={addTodo}>
             追加
           </button>
         </form>
@@ -57,9 +74,16 @@ function App() {
             //<li />をFragmentで囲むとFragmentにもkeyを渡せとエラーが出る
             <li key={todo.id}>
               {todo.text}
+              {/* 条件付きレンダー */}
+              {todo.completed && '✅'}
+              {/* 削除ボタン */}
               {/* 実行結果(戻り値)ではなく関数自体をそのまま渡す */}
               <button onClick={() => deleteTodo(todo.id)}>
                 削除
+              </button>
+              {/* 完了ボタン */}
+              <button onClick={() => toggleTodo(todo.id)}>
+                {todo.completed ? '取消' : '完了'}
               </button>
             </li>
           )
