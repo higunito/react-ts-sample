@@ -2,7 +2,7 @@ import { useState } from "react";
 import { nanoid } from 'nanoid';
 import { todoSeed } from './seeds/todoSeed';
 
-function App() {
+function App(): JSX.Element {
   //formに入力された文字列をstateとして保持
   const [text, setText] = useState('');
   //todoをStateで管理。seedsで初期化
@@ -42,10 +42,19 @@ function App() {
       } else {
         return todo;
       }
-
     });
     setTodos(newTodos);
-    console.log(`ID: ${id}のTODOを完了しました`);
+    console.log(`ID: ${id}のTODOの状態を切り替えました`);
+  }
+
+  //TODOを更新する関数
+  const editTodo = (id: string, newText: string): void => {
+    setTodos((todos) =>
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, text: newText } : todo
+      )
+    );
+    console.log(`ID: ${id}のTODO内容を更新しました`);
   }
 
 
@@ -68,27 +77,47 @@ function App() {
         </form>
       </div>
       <h3>TODOリスト</h3>
-      <ul>
-        {todos.map(todo => {
-          return (
-            //<li />をFragmentで囲むとFragmentにもkeyを渡せとエラーが出る
-            <li key={todo.id}>
-              {todo.text}
-              {/* 条件付きレンダー */}
-              {todo.completed && '✅'}
-              {/* 削除ボタン */}
-              {/* 実行結果(戻り値)ではなく関数自体をそのまま渡す */}
-              <button onClick={() => deleteTodo(todo.id)}>
-                削除
-              </button>
-              {/* 完了ボタン */}
-              <button onClick={() => toggleTodo(todo.id)}>
-                {todo.completed ? '取消' : '完了'}
-              </button>
-            </li>
-          )
-        })}
-      </ul>
+
+      {/* tableでやってみる */}
+      <table>
+        <thead>
+          <tr>
+            <th>Todo</th>
+            <th>完了状態</th>
+            <th>削除</th>
+            <th>完了/取消</th>
+            <th>編集</th>
+          </tr>
+        </thead>
+        <tbody>
+          {todos.map((todo) => (
+            <tr key={todo.id}>
+              <td>{todo.text}</td>
+              <td>{todo.completed ? '完了' : '未完了'}</td>
+              <td>
+                <button onClick={() => deleteTodo(todo.id)}>削除</button>
+              </td>
+              <td>
+                <button onClick={() => toggleTodo(todo.id)}>
+                  {todo.completed ? '取消' : '完了'}
+                </button>
+              </td>
+              <td>
+                <button
+                  onClick={() => {
+                    const newText = prompt('新しい内容を入力してください:', todo.text);
+                    if (newText !== null && newText.trim() !== '') {
+                      editTodo(todo.id, newText);
+                    }
+                  }}
+                >
+                  編集
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   )
 }
