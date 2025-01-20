@@ -48,14 +48,24 @@ function App(): JSX.Element {
   }
 
   //TODOを更新する関数
-  const editTodo = (id: string, newText: string): void => {
-    setTodos((todos) =>
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, text: newText } : todo
-      )
-    );
-    console.log(`ID: ${id}のTODO内容を更新しました`);
-  }
+  const editTodo = (id: string): void => {
+    const targetTodo = todos.find(todo => todo.id === id);
+    if (!targetTodo) {
+      return;
+    };
+
+    const newText = prompt('新しい内容を入力してください:', targetTodo.text);
+    if (newText !== null && newText.trim() !== '') {
+      setTodos(todos =>
+        todos.map(todo =>
+          todo.id === id ? { ...todo, text: newText } : todo
+        )
+      );
+      console.log('edit complete');
+    } else {
+      console.log('編集がキャンセルされました');
+    }
+  };
 
 
 
@@ -103,16 +113,7 @@ function App(): JSX.Element {
                 </button>
               </td>
               <td>
-                <button
-                  onClick={() => {
-                    const newText = prompt('新しい内容を入力してください:', todo.text);
-                    if (newText !== null && newText.trim() !== '') {
-                      editTodo(todo.id, newText);
-                    }
-                  }}
-                >
-                  編集
-                </button>
+                <button onClick={() => editTodo(todo.id)}>編集</button>
               </td>
             </tr>
           ))}
