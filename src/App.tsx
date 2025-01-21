@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { nanoid } from 'nanoid';
 import { todoSeed } from './seeds/todoSeed';
 import { Header } from './components/Header';
 import { TodoForm } from './components/TodoForm';
 import { TodoTable }  from './components/TodoTable';
+import { Todo } from "./types/todo";
 
 function App(): JSX.Element {
   //formに入力された文字列をstateとして保持
-  const [text, setText] = useState('');
+  const [text, setText] = useState<string>('');
+  
   //todoをStateで管理。seedsで初期化
-  const [todos, setTodos] = useState(todoSeed);
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    //sessionStorageからデータを取得
+    const savedTodos = sessionStorage.getItem("todos");
+    return savedTodos ? JSON.parse(savedTodos) : todoSeed;
+  });
+
+  // todos が更新されるたびに sessionStorageにtodosを保存
+  useEffect(() => {
+    sessionStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+  
 
   //新しいTODOを追加する関数
   const addTodo = (): void => {
