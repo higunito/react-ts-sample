@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { nanoid } from 'nanoid';
 import { todoSeed } from './seeds/todoSeed';
+import { Header } from './components/Header';
+import { TodoForm } from './components/TodoForm';
+import { TodoTable }  from './components/TodoTable';
 
 function App(): JSX.Element {
   //formに入力された文字列をstateとして保持
@@ -36,7 +39,7 @@ function App(): JSX.Element {
   //TODOを完了する関数
   const toggleTodo = (id: string): void => {
     const newTodos = todos.map((todo) => {
-      if (todo.id === id ) {
+      if (todo.id === id) {
         todo.completed = !todo.completed;
         return todo;
       } else {
@@ -68,57 +71,16 @@ function App(): JSX.Element {
   };
 
 
-
   return (
     <>
-      <h1>TODOアプリ(仮)</h1>
-      <div>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type='text'
-            placeholder='例: ゴミ捨て'
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          {/* 関数の実行結果ではなく、関数をオブジェクトとしてそのままonClickに渡す */}
-          <button onClick={addTodo}>
-            追加
-          </button>
-        </form>
-      </div>
-      <h3>TODOリスト</h3>
-
-      {/* tableでやってみる */}
-      <table>
-        <thead>
-          <tr>
-            <th>Todo</th>
-            <th>完了状態</th>
-            <th>削除</th>
-            <th>完了/取消</th>
-            <th>編集</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos.map((todo) => (
-            <tr key={todo.id}>
-              <td>{todo.text}</td>
-              <td>{todo.completed ? '完了' : '未完了'}</td>
-              <td>
-                <button onClick={() => deleteTodo(todo.id)}>削除</button>
-              </td>
-              <td>
-                <button onClick={() => toggleTodo(todo.id)}>
-                  {todo.completed ? '取消' : '完了'}
-                </button>
-              </td>
-              <td>
-                <button onClick={() => editTodo(todo.id)}>編集</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Header />
+      <TodoForm text={text} setText={setText} addTodo={addTodo} />
+      <TodoTable
+        todos={todos}
+        deleteTodo={deleteTodo}
+        toggleTodo={toggleTodo}
+        editTodo={editTodo}
+      />
     </>
   )
 }
